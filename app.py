@@ -6,7 +6,17 @@ import docx
 
 app = Flask(__name__)
 
-# Load SpaCy model
+# Predefined list of skills
+SKILL_SET = [
+    "Python", "Java", "C++", "C", "JavaScript", "TypeScript",
+    "HTML", "CSS", "React", "Node.js", "Flask", "Django",
+    "SQL", "MySQL", "PostgreSQL", "MongoDB",
+    "Pandas", "NumPy", "Matplotlib", "Data Analysis",
+    "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch",
+    "Git", "GitHub", "Power BI", "Excel", "Tableau"
+]
+
+# Load SpaCy model for tokenization
 try:
     nlp = spacy.load("en_core_web_sm")
 except OSError:
@@ -29,18 +39,16 @@ def extract_text_from_file(file):
             text += para.text + "\n"
     elif filename.endswith(".txt"):
         text = file.read().decode("utf-8", errors="ignore")
-    else:
-        text = ""
     return text
 
 def extract_skills(text):
-    """Extract potential skills using NLP."""
-    doc = nlp(text)
-    skills = set()
-    for token in doc:
-        if token.pos_ in ["PROPN", "NOUN"]:
-            skills.add(token.text)
-    return sorted(skills)
+    """Extract skills from resume text based on predefined list."""
+    found_skills = set()
+    text_lower = text.lower()
+    for skill in SKILL_SET:
+        if skill.lower() in text_lower:
+            found_skills.add(skill)
+    return sorted(found_skills)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
