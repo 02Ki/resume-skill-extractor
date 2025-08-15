@@ -6,7 +6,7 @@ import docx
 
 app = Flask(__name__)
 
-# Predefined list of skills
+# Master skill list
 SKILL_SET = [
     "Python", "Java", "C++", "C", "JavaScript", "TypeScript",
     "HTML", "CSS", "React", "Node.js", "Flask", "Django",
@@ -50,9 +50,15 @@ def extract_skills(text):
             found_skills.add(skill)
     return sorted(found_skills)
 
+def suggest_skills(found_skills):
+    """Suggest missing skills from the master list."""
+    missing_skills = [skill for skill in SKILL_SET if skill not in found_skills]
+    return missing_skills[:5]  # Suggest top 5 missing skills
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     skills = []
+    suggestions = []
     if request.method == "POST":
         if "resume" not in request.files:
             return "No file uploaded", 400
@@ -66,8 +72,9 @@ def index():
             return "Could not read the file or file is empty", 400
 
         skills = extract_skills(resume_text)
+        suggestions = suggest_skills(skills)
 
-    return render_template("index.html", skills=skills)
+    return render_template("index.html", skills=skills, suggestions=suggestions)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
