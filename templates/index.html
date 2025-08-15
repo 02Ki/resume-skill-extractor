@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume Skill Analyzer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .skill-tag {
+            display: inline-block;
+            padding: 5px 12px;
+            margin: 3px;
+            border-radius: 15px;
+            color: white;
+            font-size: 0.9em;
+        }
+        .programming { background-color: #007bff; }
+        .web { background-color: #28a745; }
+        .data { background-color: #ffc107; color: black; }
+        .ai { background-color: #6f42c1; }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">📄 Resume Skill Analyzer</h1>
+
+    <form method="POST" enctype="multipart/form-data" class="card p-4 shadow">
+        <div class="mb-3">
+            <label class="form-label">Upload Resume (PDF/DOCX/TXT)</label>
+            <input type="file" name="resume" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Analyze Resume</button>
+    </form>
+
+    {% if skills %}
+    <div class="mt-5 card p-4 shadow">
+        <h3>✅ Found Skills:</h3>
+        {% for skill in skills %}
+            {% if skill in ["Python","Java","C++"] %}
+                <span class="skill-tag programming">{{ skill }}</span>
+            {% elif skill in ["HTML","CSS","JavaScript","Flask","Django","React","Node.js"] %}
+                <span class="skill-tag web">{{ skill }}</span>
+            {% elif skill in ["SQL","Pandas","NumPy","Data Analysis"] %}
+                <span class="skill-tag data">{{ skill }}</span>
+            {% else %}
+                <span class="skill-tag ai">{{ skill }}</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if suggestions %}
+    <div class="mt-4 card p-4 shadow">
+        <h3>💡 Suggested Skills to Learn:</h3>
+        <ul>
+            {% for suggestion in suggestions %}
+                <li>{{ suggestion }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>
